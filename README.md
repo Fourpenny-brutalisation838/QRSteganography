@@ -57,6 +57,15 @@ Usage:
 
 <br>
 
+## Credits
+
+The QR encode and decode implementations are based on the following projects:
+
+- [QR-Code-generator](https://github.com/nayuki/QR-Code-generator/tree/master/c), used for QR code generation and encoding logic.
+- [quirc](https://github.com/dlbeer/quirc), used for QR code detection and decoding from images.
+
+<br>
+
 # Demo
 
 <img width="1540" height="848" alt="image" src="https://github.com/user-attachments/assets/f58bfaf6-ece4-44de-b8d5-52161042d224" />
